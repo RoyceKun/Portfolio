@@ -3,187 +3,20 @@ let currentPlayer = 'X';
 let gameBoard = ['', '', '', '', '', '', '', '', ''];
 let gameActive = true;
 
+// --- Removed Tic Tac Toe and Quiz game code ---
+// (variables and functions related to Tic Tac Toe and Quiz have been deleted:
+//  currentPlayer, gameBoard, gameActive, initializeTicTacToe, cellClicked,
+//  checkWinner, highlightWinningCells, resetTicTacToe,
+//  quizQuestions, initializeQuiz, displayQuestion, selectOption,
+//  submitAnswer, resetQuiz, updateQuizScore, and related DOMContentLoaded calls)
+
+// Keep or reinitialize other games / helpers below:
+
+// Memory Game (kept)
 let memoryCards = [];
 let flippedCards = [];
 let matchedPairs = 0;
 
-let quizQuestions = [
-    {
-        question: "What does HTML stand for?",
-        options: [
-            "Hyper Text Markup Language",
-            "High Tech Modern Language",
-            "Hyper Transfer Markup Language",
-            "Home Tool Markup Language"
-        ],
-        correct: 0
-    },
-    {
-        question: "Which language is used for web app styling?",
-        options: [
-            "HTML",
-            "JavaScript",
-            "CSS",
-            "Python"
-        ],
-        correct: 2
-    },
-    {
-        question: "What is JavaScript primarily used for?",
-        options: [
-            "Styling web pages",
-            "Creating web page structure",
-            "Adding interactivity to web pages",
-            "Database management"
-        ],
-        correct: 2
-    }
-];
-let currentQuestion = 0;
-let quizScore = 0;
-let selectedOption = null;
-
-// Initialize games when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    initializeTicTacToe();
-    initializeMemoryGame();
-    initializeQuiz();
-});
-
-// Show/hide game areas
-function showGame(gameId) {
-    // Hide all game areas
-    document.querySelectorAll('.game-area').forEach(area => {
-        area.style.display = 'none';
-    });
-    
-    // Show selected game
-    document.getElementById(gameId).style.display = 'block';
-}
-
-// Tic Tac Toe Game
-function initializeTicTacToe() {
-    const board = document.getElementById('ticTacToeBoard');
-    if (!board) return;
-    
-    board.innerHTML = '';
-    
-    for (let i = 0; i < 9; i++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.setAttribute('data-index', i);
-        cell.addEventListener('click', () => cellClicked(i));
-        board.appendChild(cell);
-    }
-}
-
-function cellClicked(index) {
-    if (gameBoard[index] !== '' || !gameActive) return;
-    
-    gameBoard[index] = currentPlayer;
-    const cell = document.querySelector(`.cell[data-index="${index}"]`);
-    if (cell) {
-        cell.textContent = currentPlayer;
-        cell.style.pointerEvents = 'none'; // Disable further clicks on this cell
-    }
-    
-    if (checkWinner()) {
-        const status = document.getElementById('gameStatus');
-        if (status) {
-            status.textContent = `Player ${currentPlayer} wins!`;
-            status.style.color = 'var(--success)';
-        }
-        gameActive = false;
-        highlightWinningCells();
-        return;
-    }
-    
-    if (gameBoard.every(cell => cell !== '')) {
-        const status = document.getElementById('gameStatus');
-        if (status) {
-            status.textContent = "It's a draw!";
-            status.style.color = 'var(--info)';
-        }
-        gameActive = false;
-        return;
-    }
-    
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    const status = document.getElementById('gameStatus');
-    if (status) {
-        status.textContent = `Player ${currentPlayer}'s turn`;
-        status.style.color = 'var(--light)';
-    }
-}
-
-function checkWinner() {
-    const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
-        [0, 4, 8], [2, 4, 6] // diagonals
-    ];
-    
-    return winPatterns.some(pattern => {
-        const [a, b, c] = pattern;
-        return gameBoard[a] !== '' && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c];
-    });
-}
-
-function highlightWinningCells() {
-    const winPatterns = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],
-        [0, 4, 8], [2, 4, 6]
-    ];
-    
-    const winningPattern = winPatterns.find(pattern => {
-        const [a, b, c] = pattern;
-        return gameBoard[a] !== '' && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c];
-    });
-    
-    if (winningPattern) {
-        winningPattern.forEach(index => {
-            const cell = document.querySelector(`.cell[data-index="${index}"]`);
-            if (cell) {
-                cell.style.backgroundColor = 'rgba(0, 255, 65, 0.2)';
-                cell.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.7)';
-            }
-        });
-    }
-}
-
-function resetTicTacToe() {
-    gameBoard = ['', '', '', '', '', '', '', '', ''];
-    gameActive = true;
-    currentPlayer = 'X';
-    
-    document.querySelectorAll('.cell').forEach(cell => {
-        cell.textContent = '';
-        cell.style.pointerEvents = 'auto';
-        cell.style.backgroundColor = '';
-        cell.style.boxShadow = '';
-    });
-    
-    const status = document.getElementById('gameStatus');
-    if (status) {
-        status.textContent = "Your turn! You are X";
-        status.style.color = 'var(--light)';
-    }
-}
-
-// Update the DOMContentLoaded event listener
-document.addEventListener('DOMContentLoaded', function() {
-    initializeTicTacToe();
-    initializeMemoryGame();
-    initializeQuiz();
-    
-    // Hide all game areas initially
-    document.querySelectorAll('.game-area').forEach(area => {
-        area.style.display = 'none';
-    });
-});
-
-// Memory Game
 function initializeMemoryGame() {
     const symbols = ['🍎', '🍌', '🍒', '🍇', '🍊', '🍓', '🥝', '🍑'];
     memoryCards = [...symbols, ...symbols];
@@ -206,14 +39,12 @@ function initializeMemoryGame() {
         board.appendChild(card);
     });
 }
-
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
 }
-
 function flipCard(index) {
     const card = document.querySelector(`.memory-card[data-index="${index}"]`);
     
@@ -249,77 +80,119 @@ function flipCard(index) {
         }
     }
 }
-
 function resetMemoryGame() {
     flippedCards = [];
     matchedPairs = 0;
     document.getElementById('memoryStatus').textContent = "Find all matching pairs!";
     initializeMemoryGame();
 }
+window.resetMemoryGame = resetMemoryGame;
 
-// Quiz Game
-function initializeQuiz() {
-    displayQuestion();
+// --- Simple Rock-Paper-Scissors ---
+function playRPS(choice) {
+    const choices = ['rock','paper','scissors'];
+    const cpu = choices[Math.floor(Math.random() * choices.length)];
+    const resultEl = document.getElementById('rpsResult');
+    let resultText = `You: ${choice} — CPU: ${cpu} — `;
+    if (choice === cpu) resultText += 'Draw';
+    else if (
+        (choice === 'rock' && cpu === 'scissors') ||
+        (choice === 'paper' && cpu === 'rock') ||
+        (choice === 'scissors' && cpu === 'paper')
+    ) resultText += 'You win!';
+    else resultText += 'CPU wins';
+    if (resultEl) resultEl.textContent = resultText;
+}
+function resetRPS() {
+    const resultEl = document.getElementById('rpsResult');
+    if (resultEl) resultEl.textContent = 'Choose: Rock, Paper or Scissors';
+}
+window.playRPS = playRPS;
+window.resetRPS = resetRPS;
+
+// --- Simple Simon Says ---
+let simonSequence = [];
+let simonPlayerIndex = 0;
+let simonPlaying = false;
+
+function startSimon() {
+    resetSimon();
+    addSimonStep();
+    playSimonSequence();
+}
+function resetSimon() {
+    simonSequence = [];
+    simonPlayerIndex = 0;
+    simonPlaying = false;
+    const status = document.getElementById('simonStatus');
+    if (status) status.textContent = 'Press Start to play';
+}
+function addSimonStep() {
+    const next = Math.floor(Math.random() * 4);
+    simonSequence.push(next);
+    simonPlayerIndex = 0;
+}
+function flashButton(idx) {
+    const btn = document.querySelector(`.simon-btn[data-color="${idx}"]`);
+    if (!btn) return;
+    btn.classList.add('flash');
+    // short audible/visual cue (optional)
+    setTimeout(() => btn.classList.remove('flash'), 300);
 }
 
-function displayQuestion() {
-    if (currentQuestion >= quizQuestions.length) {
-        document.getElementById('quizQuestion').textContent = "Quiz completed!";
-        document.getElementById('quizOptions').innerHTML = '';
+async function playSimonSequence() {
+    simonPlaying = true;
+    const status = document.getElementById('simonStatus');
+    if (status) status.textContent = 'Watch the sequence';
+    for (let i = 0; i < simonSequence.length; i++) {
+        await new Promise(r => setTimeout(r, 500));
+        flashButton(simonSequence[i]);
+    }
+    simonPlaying = false;
+    if (status) status.textContent = `Your turn — repeat ${simonSequence.length} steps`;
+}
+function handleSimonClick(idx) {
+    if (simonPlaying || simonSequence.length === 0) return;
+    flashButton(idx);
+    if (idx !== simonSequence[simonPlayerIndex]) {
+        const status = document.getElementById('simonStatus');
+        if (status) status.textContent = 'Wrong — game over';
         return;
     }
-    
-    const question = quizQuestions[currentQuestion];
-    document.getElementById('quizQuestion').textContent = question.question;
-    
-    const optionsContainer = document.getElementById('quizOptions');
-    optionsContainer.innerHTML = '';
-    
-    question.options.forEach((option, index) => {
-        const optionElement = document.createElement('div');
-        optionElement.className = 'quiz-option';
-        optionElement.textContent = option;
-        optionElement.setAttribute('data-index', index);
-        optionElement.addEventListener('click', () => selectOption(index));
-        optionsContainer.appendChild(optionElement);
-    });
-    
-    selectedOption = null;
-    updateQuizScore();
-}
-
-function selectOption(index) {
-    // Remove selected class from all options
-    document.querySelectorAll('.quiz-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
-    // Add selected class to clicked option
-    document.querySelector(`.quiz-option[data-index="${index}"]`).classList.add('selected');
-    selectedOption = index;
-}
-
-function submitAnswer() {
-    if (selectedOption === null) {
-        alert("Please select an answer!");
-        return;
+    simonPlayerIndex++;
+    if (simonPlayerIndex === simonSequence.length) {
+        const status = document.getElementById('simonStatus');
+        if (status) status.textContent = 'Good — next round';
+        addSimonStep();
+        setTimeout(playSimonSequence, 700);
     }
-    
-    const question = quizQuestions[currentQuestion];
-    if (selectedOption === question.correct) {
-        quizScore++;
+}
+
+// wire up simon buttons using delegated listener and initialize memory game
+document.addEventListener('DOMContentLoaded', function () {
+    try { initializeMemoryGame(); } catch (e) { /* ignore if function stubbed */ }
+
+    // Delegated click handler — works even if elements are added later
+    document.addEventListener('click', function (e) {
+        // DEBUG: log all clicks (remove after debugging)
+        // console.log('doc click:', e.target);
+
+        const btn = e.target.closest('.simon-btn');
+        if (btn && btn.hasAttribute('data-color')) {
+            const idx = Number(btn.getAttribute('data-color'));
+            // DEBUG: confirm handler call
+            console.log('simon click', idx, 'simonPlaying=', simonPlaying, 'sequenceLen=', simonSequence.length);
+            handleSimonClick(idx);
+        }
+    });
+});
+
+// showGame helper (keeps existing behavior)
+if (typeof showGame === 'undefined') {
+    function showGame(id) {
+        document.querySelectorAll('.game-area').forEach(el => {
+            el.style.display = (el.id === id) ? 'block' : 'none';
+        });
     }
-    
-    currentQuestion++;
-    displayQuestion();
-}
-
-function resetQuiz() {
-    currentQuestion = 0;
-    quizScore = 0;
-    displayQuestion();
-}
-
-function updateQuizScore() {
-    document.getElementById('quizScore').textContent = `Score: ${quizScore}/${currentQuestion}`;
+    window.showGame = showGame;
 }
