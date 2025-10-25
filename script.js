@@ -64,6 +64,8 @@ function showGame(gameId) {
 // Tic Tac Toe Game
 function initializeTicTacToe() {
     const board = document.getElementById('ticTacToeBoard');
+    if (!board) return;
+    
     board.innerHTML = '';
     
     for (let i = 0; i < 9; i++) {
@@ -79,22 +81,39 @@ function cellClicked(index) {
     if (gameBoard[index] !== '' || !gameActive) return;
     
     gameBoard[index] = currentPlayer;
-    document.querySelector(`.cell[data-index="${index}"]`).textContent = currentPlayer;
+    const cell = document.querySelector(`.cell[data-index="${index}"]`);
+    if (cell) {
+        cell.textContent = currentPlayer;
+        cell.style.pointerEvents = 'none'; // Disable further clicks on this cell
+    }
     
     if (checkWinner()) {
-        document.getElementById('gameStatus').textContent = `Player ${currentPlayer} wins!`;
+        const status = document.getElementById('gameStatus');
+        if (status) {
+            status.textContent = `Player ${currentPlayer} wins!`;
+            status.style.color = 'var(--success)';
+        }
         gameActive = false;
+        highlightWinningCells();
         return;
     }
     
     if (gameBoard.every(cell => cell !== '')) {
-        document.getElementById('gameStatus').textContent = "It's a draw!";
+        const status = document.getElementById('gameStatus');
+        if (status) {
+            status.textContent = "It's a draw!";
+            status.style.color = 'var(--info)';
+        }
         gameActive = false;
         return;
     }
     
     currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    document.getElementById('gameStatus').textContent = `Player ${currentPlayer}'s turn`;
+    const status = document.getElementById('gameStatus');
+    if (status) {
+        status.textContent = `Player ${currentPlayer}'s turn`;
+        status.style.color = 'var(--light)';
+    }
 }
 
 function checkWinner() {
@@ -110,6 +129,29 @@ function checkWinner() {
     });
 }
 
+function highlightWinningCells() {
+    const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+    ];
+    
+    const winningPattern = winPatterns.find(pattern => {
+        const [a, b, c] = pattern;
+        return gameBoard[a] !== '' && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c];
+    });
+    
+    if (winningPattern) {
+        winningPattern.forEach(index => {
+            const cell = document.querySelector(`.cell[data-index="${index}"]`);
+            if (cell) {
+                cell.style.backgroundColor = 'rgba(0, 255, 65, 0.2)';
+                cell.style.boxShadow = '0 0 15px rgba(0, 255, 65, 0.7)';
+            }
+        });
+    }
+}
+
 function resetTicTacToe() {
     gameBoard = ['', '', '', '', '', '', '', '', ''];
     gameActive = true;
@@ -117,10 +159,29 @@ function resetTicTacToe() {
     
     document.querySelectorAll('.cell').forEach(cell => {
         cell.textContent = '';
+        cell.style.pointerEvents = 'auto';
+        cell.style.backgroundColor = '';
+        cell.style.boxShadow = '';
     });
     
-    document.getElementById('gameStatus').textContent = "Your turn! You are X";
+    const status = document.getElementById('gameStatus');
+    if (status) {
+        status.textContent = "Your turn! You are X";
+        status.style.color = 'var(--light)';
+    }
 }
+
+// Update the DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    initializeTicTacToe();
+    initializeMemoryGame();
+    initializeQuiz();
+    
+    // Hide all game areas initially
+    document.querySelectorAll('.game-area').forEach(area => {
+        area.style.display = 'none';
+    });
+});
 
 // Memory Game
 function initializeMemoryGame() {
