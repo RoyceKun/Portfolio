@@ -415,6 +415,7 @@ section {
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
     align-items: start; /* This ensures all cards start at the same height */
+    position: relative;
 }
 
 .game-card {
