@@ -200,7 +200,7 @@ nav ul li a:hover::after {
 }
 
 .btn {
-    display: inline-block;
+    display: inline-flex;
     padding: 12px 30px;
     background: linear-gradient(90deg, var(--primary), var(--secondary));
     color: white;
@@ -216,6 +216,7 @@ nav ul li a:hover::after {
     z-index: 1;
     box-shadow: 0 0 10px rgba(255, 7, 58, 0.5);
     letter-spacing: 1px;
+    justify-content: center;
 }
 
 .btn::before {
@@ -324,6 +325,8 @@ section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 30px;
+    align-items: start; /* This ensures all cards start at the same height */
+    position: relative;
 }
 
 .project-card {
@@ -334,6 +337,12 @@ section {
     transition: all 0.3s;
     border: 1px solid rgba(255, 7, 58, 0.3);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    height: 100%; /* Make all cards the same height */
+    min-height: 400px; /* Set a minimum height */
+    
 }
 
 .project-card::before {

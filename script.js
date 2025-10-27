@@ -91,16 +91,16 @@ window.resetMemoryGame = resetMemoryGame;
 // --- Simple Rock-Paper-Scissors ---
 function playRPS(choice) {
     const choices = ['rock','paper','scissors'];
-    const cpu = choices[Math.floor(Math.random() * choices.length)];
+    const computer = choices[Math.floor(Math.random() * choices.length)];
     const resultEl = document.getElementById('rpsResult');
-    let resultText = `You: ${choice} — CPU: ${cpu} — `;
-    if (choice === cpu) resultText += 'Draw';
+    let resultText = `You: ${choice} — Computer: ${computer} — `;
+    if (choice === computer) resultText += 'Draw';
     else if (
-        (choice === 'rock' && cpu === 'scissors') ||
-        (choice === 'paper' && cpu === 'rock') ||
-        (choice === 'scissors' && cpu === 'paper')
+        (choice === 'rock' && computer === 'scissors') ||
+        (choice === 'paper' && computer === 'rock') ||
+        (choice === 'scissors' && computer === 'paper')
     ) resultText += 'You win!';
-    else resultText += 'CPU wins';
+    else resultText += 'Computer wins';
     if (resultEl) resultEl.textContent = resultText;
 }
 function resetRPS() {
