@@ -4,12 +4,19 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        
         {
             "type": "chrome",
             "request": "launch",
             "name": "Open index.html",
             "file": "c:/Users/macar/OneDrive/Documents/GitHub/Portfolio/index.html"
+        },
+
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open index.html",
+            "file": "c:/Users/ICTS-TECH-TEST2/Documents/GitHub/Portfolio/index.html"
         },
 
         {
